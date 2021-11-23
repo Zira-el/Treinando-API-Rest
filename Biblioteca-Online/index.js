@@ -58,8 +58,41 @@ app.post("/livros", (req, res) => {
   livros.push(novoLivro);
   res.json(livros);
   return
+});
+
+app.put("/livros/:id", (req, res) => {
+  const id = Number(req.params.id);
+  let idExiste, index;
+
+  const { titulo, autor, ano, numPaginas } = req.body;
+
+  const novoLivro = {
+    id: id,
+    titulo: titulo,
+    autor: autor,
+    ano: ano,
+    numPaginas: numPaginas
+  }
+
+  if (!id) {
+    res.json("O valor do parâmetro ID da URL não é um número válido.");
+    return;
+  }
+
+  idExiste = livros.find(livro => livro.id === id);
+
+  if (!idExiste) {
+    livros.push(novoLivro);
+    res.json("Novo livro criado e adicionado à biblioteca");
+    return;
+  }
+
+  index = livros.indexOf(idExiste);
+
+  livros.splice(index, 1, novoLivro);
+
+  res.json(livros);
+  return;
 })
-
-
 
 app.listen(8001);
