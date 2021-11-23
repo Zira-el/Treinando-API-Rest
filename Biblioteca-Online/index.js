@@ -44,6 +44,21 @@ app.get("/livros/:id", (req, res) => {
   return;
 });
 
+app.post("/livros", (req, res) => {
+  const { titulo, autor, ano, numPaginas } = req.body;
+
+  const novoLivro = {
+    id: livros.length + 1,
+    titulo: titulo,
+    autor: autor,
+    ano: ano,
+    numPaginas: numPaginas
+  }
+
+  livros.push(novoLivro);
+  res.json(livros);
+  return
+})
 
 
 
