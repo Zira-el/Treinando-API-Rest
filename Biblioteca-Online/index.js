@@ -21,6 +21,7 @@ const livros = [
   }
 ];
 
+let proximoID = livros[livros.length - 1].id;
 app.get("/livros", (req, res) => {
   res.json(livros);
   return;
@@ -48,7 +49,7 @@ app.post("/livros", (req, res) => {
   const { titulo, autor, ano, numPaginas } = req.body;
 
   const novoLivro = {
-    id: livros.length + 1,
+    id: proximoID + 1,
     titulo: titulo,
     autor: autor,
     ano: ano,
@@ -112,6 +113,7 @@ app.patch("/livros/:id", (req, res) => {
 
   if (!livroExiste) {
     res.status(404).json("Livro não encontrado");
+    return;
   }
 
   if (titulo) {
@@ -130,7 +132,28 @@ app.patch("/livros/:id", (req, res) => {
     livroExiste.numPaginas = numPaginas;
   }
 
-  res.status(200).json(livroExiste);
+  return res.status(200).json(livroExiste);
 });
+
+app.delete("/livros/:id", (req, res) => {
+  const id = Number(req.params.id);
+  let livroExiste;
+
+  if (!id) {
+    res.status(400).json("Parâmetro ID está incorreto. Tente novamente.");
+    return;
+  }
+
+  livroExiste = livros.find(livro => livro.id === id);
+
+  if (!livroExiste) {
+    res.status(404).json("Não existe livro com a ID informada");
+    return;
+  }
+
+  const index = livros.indexOf(livroExiste);
+  livros.splice(index, 1);
+  return res.status(200).json("Livro deletado");
+})
 
 app.listen(8001);
