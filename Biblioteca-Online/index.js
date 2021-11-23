@@ -66,7 +66,7 @@ app.put("/livros/:id", (req, res) => {
 
   const { titulo, autor, ano, numPaginas } = req.body;
 
-  const novoLivro = {
+  const substituirLivro = {
     id: id,
     titulo: titulo,
     autor: autor,
@@ -82,17 +82,55 @@ app.put("/livros/:id", (req, res) => {
   idExiste = livros.find(livro => livro.id === id);
 
   if (!idExiste) {
-    livros.push(novoLivro);
-    res.json("Novo livro criado e adicionado à biblioteca");
+    res.json("Não existe livro a ser substituído para o ID informado.");
     return;
   }
 
   index = livros.indexOf(idExiste);
 
-  livros.splice(index, 1, novoLivro);
+  livros.splice(index, 1, substituirLivro);
 
-  res.json(livros);
+  res.json("Livro substituído.");
   return;
-})
+});
+
+app.patch("/livros/:id", (req, res) => {
+  const id = Number(req.params.id), { titulo, autor, ano, numPaginas } = (req.body);
+  let livroExiste;
+
+  if (!id) {
+    res.status(400).json("O valor do parâmetro ID da URL não é um número válido.");
+    return
+  }
+
+  if (!titulo && !autor && !ano && !numPaginas) {
+    res.status(400).json("É necessário algum campo para alterar o livro.");
+    return;
+  }
+
+  livroExiste = livros.find(livro => livro.id === id);
+
+  if (!livroExiste) {
+    res.status(404).json("Livro não encontrado");
+  }
+
+  if (titulo) {
+    livroExiste.titulo = titulo;
+  }
+
+  if (autor) {
+    livroExiste.autor = autor;
+  }
+
+  if (ano) {
+    livroExiste.ano = ano;
+  }
+
+  if (numPaginas) {
+    livroExiste.numPaginas = numPaginas;
+  }
+
+  res.status(200).json(livroExiste);
+});
 
 app.listen(8001);
