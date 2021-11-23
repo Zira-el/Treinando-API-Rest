@@ -26,4 +26,25 @@ app.get("/livros", (req, res) => {
   return;
 });
 
+app.get("/livros/:id", (req, res) => {
+  const id = Number(req.params.id);
+  const existe = livros.find(identify => identify.id === id);
+
+  if (!id) {
+    res.json("O valor do parâmetro ID da URL não é um número válido.");
+    return;
+  }
+
+  if (!existe) {
+    res.json("Não existe livro para o ID informado.")
+    return;
+  }
+
+  res.json(existe);
+  return;
+});
+
+
+
+
 app.listen(8001);
