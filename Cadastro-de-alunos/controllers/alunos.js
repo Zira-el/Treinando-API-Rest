@@ -1,7 +1,7 @@
 const alunos = require("../data/dadosAlunos");
 
 function retornarAlunos(req, res) {
-
+  res.status(200).json(alunos);
 }
 
 function retornarUmAluno(req, res) {
