@@ -1,40 +1,5 @@
 const alunos = require("../data/dadosAlunos");
-
-function tratarErros(dados) {
-  const { nome, sobrenome, idade, curso } = dados;
-
-  if (!nome) {
-    return "O campo 'nome' é obrigatório.";
-  }
-
-  if (Number(nome)) {
-    return "O campo 'nome' precisa ser um texto.";
-  }
-
-  if (!Number(idade)) {
-    return "O campo 'idade' precisa ser um número";
-  }
-
-  if (!sobrenome) {
-    return "O campo 'sobrenome' é obrigatório.";
-  }
-
-  if (Number(sobrenome)) {
-    return "O campo 'sobrenome' precisa ser um texto.";
-  }
-
-  if (!curso) {
-    return "O campo 'curso' é obrigatório.";
-  }
-
-  if (Number(curso)) {
-    return "O campo 'curso' precisa ser um texto.";
-  }
-
-  if (idade < 18) {
-    return "Idade não permitida";
-  }
-}
+const { tratarErrosCadastro, tratarErrosId } = require("../utils/erros");
 
 let id = 0;
 
@@ -44,9 +9,10 @@ function retornarAlunos(req, res) {
 
 function retornarUmAluno(req, res) {
   const id = Number(req.params.id);
+  const erro = tratarErrosId(id);
 
-  if (!id) {
-    return res.status(400).json("O parâmetro ID está incorreto.");
+  if (erro) {
+    return res.status(400).json({ erro: erro });
   }
 
   const alunoExiste = alunos.find(aluno => aluno.id === id);
@@ -59,7 +25,7 @@ function retornarUmAluno(req, res) {
 }
 
 function adicionarAluno(req, res) {
-  const { nome, sobrenome, idade, curso } = req.body, erro = tratarErros(req.body);
+  const { nome, sobrenome, idade, curso } = req.body, erro = tratarErrosCadastro(req.body);
   let dados = {};
 
   if (erro) {
