@@ -45,7 +45,24 @@ function adicionarAluno(req, res) {
 }
 
 function deletarAluno(req, res) {
+  const id = Number(req.params.id);
+  const erro = tratarErrosId(id);
 
+  if (erro) {
+    return res.status(400).json({ erro: erro });
+  }
+
+  const alunoExiste = alunos.find(aluno => aluno.id === id);
+
+  if (!alunoExiste) {
+    return res.status(404).json("Aluno não encontrado!");
+  }
+
+  const index = alunos.indexOf(alunoExiste);
+
+  alunos.splice(index, 1);
+
+  res.status(200).json("Aluno deletado com sucesso.");
 }
 
 module.exports = {
