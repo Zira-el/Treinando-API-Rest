@@ -3,22 +3,31 @@ const { tratarErrosCadastro, tratarErrosId } = require("../utils/erros");
 
 let id = 0;
 
+function encontrarAluno(id) {
+  const erro = tratarErrosId(id);
+
+  if (erro) {
+    return "erro id";
+  }
+
+  const alunoExiste = alunos.find(aluno => aluno.id === Number(id));
+
+  return alunoExiste;
+}
+
 function retornarAlunos(req, res) {
   res.status(200).json(alunos);
 }
 
 function retornarUmAluno(req, res) {
-  const id = Number(req.params.id);
-  const erro = tratarErrosId(id);
+  const alunoExiste = encontrarAluno(req.params.id);
 
-  if (erro) {
-    return res.status(400).json({ erro: erro });
+  if (alunoExiste === "erro id") {
+    return res.status(404).json("Parâmetro 'ID' incorreto.");
   }
 
-  const alunoExiste = alunos.find(aluno => aluno.id === id);
-
   if (!alunoExiste) {
-    return res.status(404).json("Aluno não encontrado!");
+    return res.status(404).json("Aluno informado não existe.");
   }
 
   res.status(200).json(alunoExiste);
@@ -45,17 +54,14 @@ function adicionarAluno(req, res) {
 }
 
 function deletarAluno(req, res) {
-  const id = Number(req.params.id);
-  const erro = tratarErrosId(id);
+  const alunoExiste = encontrarAluno(req.params.id);
 
-  if (erro) {
-    return res.status(400).json({ erro: erro });
+  if (alunoExiste === "erro id") {
+    return res.status(404).json("Parâmetro 'ID' incorreto.");
   }
 
-  const alunoExiste = alunos.find(aluno => aluno.id === id);
-
   if (!alunoExiste) {
-    return res.status(404).json("Aluno não encontrado!");
+    return res.status(404).json("Aluno informado não existe.");
   }
 
   const index = alunos.indexOf(alunoExiste);
