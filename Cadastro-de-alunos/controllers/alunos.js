@@ -4,37 +4,39 @@ function tratarErros(dados) {
   const { nome, sobrenome, idade, curso } = dados;
 
   if (!nome) {
-    return res.status(400).json("O campo 'nome' é obrigatório.");
+    return "O campo 'nome' é obrigatório.";
   }
 
   if (Number(nome)) {
-    return res.status(400).json("O campo 'nome' precisa ser um texto.");
+    return "O campo 'nome' precisa ser um texto.";
   }
 
   if (!Number(idade)) {
-    return res.status(400).json("O campo 'idade' precisa ser um número");
+    return "O campo 'idade' precisa ser um número";
   }
 
   if (!sobrenome) {
-    return res.status(400).json("O campo 'sobrenome' é obrigatório.");
+    return "O campo 'sobrenome' é obrigatório.";
   }
 
   if (Number(sobrenome)) {
-    return res.status(400).json("O campo 'sobrenome' precisa ser um texto.");
+    return "O campo 'sobrenome' precisa ser um texto.";
   }
 
   if (!curso) {
-    return res.status(400).json("O campo 'curso' é obrigatório.");
+    return "O campo 'curso' é obrigatório.";
   }
 
   if (Number(curso)) {
-    return res.status(400).json("O campo 'curso' precisa ser um texto.");
+    return "O campo 'curso' precisa ser um texto.";
   }
 
   if (idade < 18) {
-    return res.status(400).json("Idade não permitida");
+    return "Idade não permitida";
   }
 }
+
+let id = 0;
 
 function retornarAlunos(req, res) {
   res.status(200).json(alunos);
@@ -57,12 +59,15 @@ function retornarUmAluno(req, res) {
 }
 
 function adicionarAluno(req, res) {
-  const { nome, sobrenome, idade, curso } = req.body;
-  let id = 0, dados = {};
-  tratarErros(req.body);
+  const { nome, sobrenome, idade, curso } = req.body, erro = tratarErros(req.body);
+  let dados = {};
+
+  if (erro) {
+    return res.status(400).json({ erro: erro });
+  }
 
   dados = {
-    id: id++,
+    id: ++id,
     nome: nome,
     sobrenome: sobrenome,
     idade: idade,
