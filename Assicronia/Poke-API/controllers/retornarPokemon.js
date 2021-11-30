@@ -27,13 +27,10 @@ async function retornarUmPokemon(req, res) {
       habilidades: abilities,
       especie: species
     }
-
-    res.json(pokemon);
-
+    return res.json(pokemon);
   } catch (error) {
     res.status(500).json(error.message);
   }
-
 }
 
 module.exports = {
