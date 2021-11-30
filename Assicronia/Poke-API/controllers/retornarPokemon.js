@@ -3,7 +3,7 @@ const axios = require("axios");
 async function retornarListaDePokemons(req, res) {
   const { inicio, quantidade } = req.query;
 
-  if (!Number(inicio) && inicio != '0' || !Number(quantidade) & quantidade != 0) {
+  if (!Number(inicio) && inicio != '0' || !Number(quantidade) && quantidade != 0) {
     return res.status(400).json("Os valores de 'inicio' e 'quantidade' devem ser números.");
   }
 
@@ -12,7 +12,22 @@ async function retornarListaDePokemons(req, res) {
 }
 
 async function retornarUmPokemon(req, res) {
+  const { idOuNome } = req.params
 
+  const dados = await axios.get(`https://pokeapi.co/api/v2/pokemon/${idOuNome}/`);
+  const { id, name, height, weight, base_experience, forms, abilities, species } = dados.data;
+  const pokemon = {
+    id: id,
+    nome: name,
+    altura: height,
+    peso: weight,
+    experiencia_base: base_experience,
+    formas: forms,
+    habilidades: abilities,
+    especie: species
+  }
+
+  res.json(pokemon);
 }
 
 module.exports = {
